@@ -1,6 +1,7 @@
 import numpy as np
 import getdata as gd
 import csv as csv
+import matplotlib.pyplot as plt
 
 # Hypothesis; returns np.array
 def hyp(X,theta):
@@ -25,16 +26,16 @@ X = np.matrix(np.c_[np.ones(m),train_data])		# features MATRIX
 theta = np.matrix(np.zeros(X[0].size)).T 		# initial theta MATRIX(column vec)
 y = gd.get_survived(train_file) 				# solutions ARRAY
 
-threshold = 0.000001
+threshold = 10e-15
 old_cost = 0
 cost = 100
-maxits = 10000									# just in case we don't converge
+maxits = int(10e6)								# just in case we don't converge
 its = 0
 cost_array = []
-alpha = 0.0003									# learning rate
+alpha = 0.0035									# learning rate
 
 print('Training model...')
-while(abs(cost-old_cost) >= threshold and its <= maxits):
+while(abs(cost-old_cost) >= threshold and its < maxits):
 	its+= 1
 	old_cost = cost
 	cost = J(X,theta,y)
@@ -61,12 +62,14 @@ p.writerow(['PassengerId','Survived'])
 for row in output:
 	p.writerow(row)
 
-
-
 print('Done')
 
+print('Last cost change: ', old_cost-cost)
+print('Iterations: ', its)
 
-
+cost_array = np.array(cost_array)
+plt.plot(cost_array[:,0],cost_array[:,1])
+plt.savefig('costplot.png')
 
 
 
