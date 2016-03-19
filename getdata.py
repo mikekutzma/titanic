@@ -20,16 +20,21 @@ def get_features_array(data_file_name):
 		for j in range(0,3):
 			df.loc[(df.Age.isnull()) & (df.Gender == i) & (df.Pclass == j+1), 'Age'] = med_ages[i,j]
 
-	df = df.drop(['Name','Sex','Ticket','Cabin','PassengerId','Survived'],axis=1)
+	#Drop in median fare for missing fare data
+	df.loc[df.Fare.isnull(),'Fare'] = df.Fare.dropna().median()
+
+	df = df.drop(['Name','Sex','Ticket','Cabin','PassengerId'],axis=1)
+	if 'Survived' in df.columns:
+		df = df.drop(['Survived'],axis=1)
 
 	return df.values
 
 def get_ids(data_file_name):
-	df = pd.read_csv(open(data_file_name,'r'))
+	df = pd.read_csv(data_file_name)
 	return df.PassengerId.values
 
 def get_survived(data_file_name):
-	df = pd.read_csv(open(data_file_name,'r'))
+	df = pd.read_csv(data_file_name)
 	return df.Survived.values
 
 
